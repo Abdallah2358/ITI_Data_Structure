@@ -17,8 +17,6 @@
 #define zSmall 122
 #define zero 48
 #define nine 57
-
-// Structures
 struct Employee
 {
     int id;
@@ -31,9 +29,62 @@ struct Employee
     double tax;
 };
 
+class Node
+{
+public:
+    Employee data;
+    Node *pNext;
+    Node *pPrev;
+};
+
+Node *NewNode(Employee emp)
+{
+    Node *pNew = new Node();
+    if (pNew == NULL)
+        exit(0);
+    pNew->data = emp;
+    pNew->pNext = pNew->pPrev = NULL;
+    return pNew;
+}
+
+// Structures
+
 // Global Variables
 struct Employee EArr[10];
 int MenuCurrent = 0, ExitFlag = 0, currentView = 0; // 0 main
+
+// Linked List
+Node *pLast;
+Node *pStart;
+
+void AddNode(Employee emp)
+{
+    Node *pnew = NewNode(emp);
+    if (pLast == NULL)
+    {
+        pLast = pStart = pnew;
+    }
+    else
+    {
+        pLast->pNext = pnew;
+        pnew->pPrev = pLast;
+        pLast = pnew;
+    }
+}
+
+Node *SearchList(int key)
+{
+    Node *pSearch = pStart;
+    while (pSearch != NULL)
+    {
+        if (pSearch->data.id == key)
+            break;
+        pSearch = pSearch->pNext;
+    }
+    return pSearch;
+}
+
+
 
 // emp func
 void printEmpData(int empID)
