@@ -36,7 +36,7 @@ struct Employee EArr[10];
 int MenuCurrent = 0, ExitFlag = 0, currentView = 0; // 0 main
 
 // emp func
-void printEmpData(empID)
+void printEmpData(int empID)
 {
     struct Employee temp = EArr[empID];
     printf("\nEmployee #%i\nName : %s ,Age: %d ,Gender: %s ,Salary : %.2lf ,Over Time : %.2lf ,Tax : %.2lf ,Address : %s \n",
