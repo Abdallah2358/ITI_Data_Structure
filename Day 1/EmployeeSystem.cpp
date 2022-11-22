@@ -53,6 +53,7 @@ Node *NewNode(Employee emp)
 
 // Global Variables
 struct Employee EArr[10];
+
 int MenuCurrent = 0, ExitFlag = 0, currentView = 0; // 0 main
 
 // Linked List
@@ -85,8 +86,6 @@ Node *SearchList(int key)
     }
     return pSearch;
 }
-
-
 
 // emp func
 void printEmpData(int empID)
@@ -482,25 +481,46 @@ void showAllEmp()
 void DeleteEmpById()
 {
     int id;
-    char returnFlag = 0;
+    bool returnFlag = false;
     do
     {
+
         printf("Please Choose EmpID between 1 and 10 : ");
         scanf("%i", &id);
-        if (isIdExist(id))
-        {
-            EArr[id].id = -1;
-            returnFlag = 1;
-            printf("\nEmp #%i Deleted\nPress Any key to return to main menu\n", id);
-            _getch();
-        }
-        else
+        Node *pDel = SearchList(id);
+        if (pDel == NULL)
         {
             printf("\nThis ID Does Not Exist.\n");
             printf("\nPlease Try Again or press Backspace to return to Main Menu\n");
             char ch = _getch();
             if (ch == 8)
-                returnFlag = 1;
+                returnFlag = true;
+        }
+        else
+        {
+            if (pStart == pLast)
+            {
+                pStart = pLast = NULL;
+            }
+            else if (pStart = pDel)
+            {
+                pStart = pStart->pNext;
+                pStart->pPrev = NULL;
+            }
+            else if (pLast == pDel)
+            {
+                pLast = pLast->pPrev;
+                pLast->pPrev = NULL;
+            }
+            else
+            {
+                pDel->pNext->pPrev = pDel->pPrev;
+                pDel->pPrev->pNext = pDel->pNext;
+            }
+            delete pDel;
+            returnFlag = 1;
+            printf("\nEmp #%i Deleted\nPress Any key to return to main menu\n", id);
+            _getch();
         }
     } while (!isIdExist(id) && !returnFlag);
 }
