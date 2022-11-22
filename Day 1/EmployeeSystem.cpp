@@ -484,7 +484,6 @@ void DeleteEmpById()
     bool returnFlag = false;
     do
     {
-
         printf("Please Choose EmpID between 1 and 10 : ");
         scanf("%i", &id);
         Node *pDel = SearchList(id);
