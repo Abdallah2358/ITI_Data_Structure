@@ -17,6 +17,8 @@
 #define zSmall 122
 #define zero 48
 #define nine 57
+
+// Structures
 struct Employee
 {
     int id;
@@ -237,7 +239,7 @@ void showInputForm()
     }
 }
 
-char *lineEditor(int x, int y, char start, char end)
+char *lineEditor(int x, int y, char start, char end, int *row, int *col, char *done)
 {
     int i = 0;
     static char line[11];
@@ -263,13 +265,36 @@ char *lineEditor(int x, int y, char start, char end)
             switch (ch)
             {
             case Enter:
+                if (*row == 3 && *col == 2)
+                {
+                    *done = TRUE;
+                }
+                if (*row == 4)
+                {
+                    (*col)++;
+                }
+                (*row)++;
+
                 line[i] = '\0';
-                return;
+                return line;
                 break;
 
             case ESC:
                 exit(0);
-
+            case Tap:
+                if (*row == 3 && *col == 2)
+                {
+                    (*col)--;
+                    (*row) = 5;
+                }
+                if (*row == 4)
+                {
+                    (*col)++;
+                }
+                (*row)++;
+                line[i] = '\0';
+                return line;
+                break;
             case BackSpace:
                 if (pCurrent == pEnd && i > 0)
                 {
@@ -324,6 +349,16 @@ char *lineEditor(int x, int y, char start, char end)
                         pCurrent--;
                     }
                     break;
+                case UP:
+                    (*row)--;
+                    line[i] = '\0';
+                    return line;
+                    break;
+                case Down:
+                    (*row)++;
+                    line[i] = '\0';
+                    return line;
+                    break;
                 }
                 break;
             }
@@ -337,26 +372,43 @@ void receiveFormInput(int empID)
 {
     struct Employee temp;
     temp.id = empID;
-    char row, col;
+    int row = 1, col = 1;
     char done = FALSE;
     do
     {
+        if (col > 2)
+            col = 1;
+        if (col == 2 && row > 3)
+        {
+            row = 1;
+        }
+        else
+        {
+            if (row > 4)
+            {
+                row = 1;
+            }
+        }
+        if (row == 0)
+        {
+            row = 4;
+        }
+
         if (col == 1)
         {
             switch (row)
             {
             case 1:
-                copyStr(temp.name, lineEditor(15, 10, aSmall, zSmall));
-
+                copyStr(temp.name, lineEditor(15, 10, aSmall, zSmall, &row, &col, &done));
                 break;
             case 2:
-                temp.salary = atof(lineEditor(15, 13, zero, nine));
+                temp.salary = atof(lineEditor(15, 13, zero, nine, &row, &col, &done));
                 break;
             case 3:
-                temp.tax = atof(lineEditor(15, 16, zero, nine));
+                temp.tax = atof(lineEditor(15, 16, zero, nine, &row, &col, &done));
                 break;
             case 4:
-                copyStr(temp.address, lineEditor(15, 19, aSmall, zSmall));
+                copyStr(temp.address, lineEditor(15, 19, aSmall, zSmall, &row, &col, &done));
                 break;
             }
         }
@@ -365,29 +417,17 @@ void receiveFormInput(int empID)
             switch (row)
             {
             case 1:
-                temp.age = atoi(lineEditor(55, 10, zero, nine));
+                temp.age = atoi(lineEditor(55, 10, zero, nine, &row, &col, &done));
                 break;
             case 2:
-                copyStr(temp.gender, lineEditor(55, 13, aSmall, zSmall));
+                copyStr(temp.gender, lineEditor(55, 13, aSmall, zSmall, &row, &col, &done));
                 break;
             case 3:
-                temp.overTime = atof(lineEditor(55, 16, zero, nine));
+                temp.overTime = atof(lineEditor(55, 16, zero, nine, &row, &col, &done));
                 break;
             }
         }
-
     } while (!done);
-
-    copyStr(temp.name, lineEditor(15, 10, aSmall, zSmall));
-    temp.salary = atof(lineEditor(15, 13, zero, nine));
-    temp.tax = atof(lineEditor(15, 16, zero, nine));
-    copyStr(temp.address, lineEditor(15, 19, aSmall, zSmall));
-
-    temp.age = atoi(lineEditor(55, 10, zero, nine));
-
-    copyStr(temp.gender, lineEditor(55, 13, aSmall, zSmall));
-
-    temp.overTime = atof(lineEditor(55, 16, zero, nine));
 
     EArr[empID] = temp;
 }
