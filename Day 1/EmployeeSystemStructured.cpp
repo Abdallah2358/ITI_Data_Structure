@@ -90,7 +90,8 @@ Node *SearchList(int key)
 // emp func
 void printEmpData(int empID)
 {
-    struct Employee temp = EArr[empID];
+    // struct Employee temp = EArr[empID];
+    struct Employee temp = SearchList(empID)->data;
     printf("\nEmployee #%i\nName : %s ,Age: %d ,Gender: %s ,Salary : %.2lf ,Over Time : %.2lf ,Tax : %.2lf ,Address : %s \n",
            temp.id, temp.name, temp.age, temp.gender, temp.salary, temp.overTime, temp.tax, temp.address);
 }
@@ -210,14 +211,13 @@ int chooseEmpID()
     int temp;
     do
     {
-        printf("Please Choose EmpID between 1 and 10 : ");
+        printf("Please Choose EmpID : ");
         scanf("%i", &temp);
-        if (isIdExist(temp))
+        if (SearchList(temp))
         {
             printf("\nThis ID already used.\n");
         }
-
-    } while (isIdExist(temp));
+    } while (SearchList(temp));
     return temp;
 }
 
@@ -428,7 +428,8 @@ void receiveFormInput(int empID)
         }
     } while (!done);
 
-    EArr[empID] = temp;
+    AddNode(temp);
+    // EArr[empID] = temp;
 }
 
 void showNetSalary(int id)
@@ -443,12 +444,12 @@ void showNetSalary(int id)
 void showEmpByID()
 {
     int id;
-    char returnFlag = 0, ch;
+    bool returnFlag = false, ch;
     do
     {
         printf("Please Choose EmpID between 1 and 10 : ");
         scanf("%i", &id);
-        if (isIdExist(id))
+        if (SearchList(id))
         {
             printEmpData(id);
             printf("\nPress Any key to return to main menu\n");
@@ -460,19 +461,18 @@ void showEmpByID()
             printf("\nPlease Try Again or press Backspace to return\n");
             ch = _getch();
             if (ch == 8)
-                returnFlag = 1;
+                returnFlag = true;
         }
-    } while (!isIdExist(id) && !returnFlag);
+    } while (!SearchList(id) && !returnFlag);
 }
 
 void showAllEmp()
 {
-    for (int i = 0; i < 10; i++)
+    Node *temp = pStart;
+    while (temp)
     {
-        if (isIdExist(i))
-        {
-            printEmpData(i);
-        }
+        printEmpData(temp->data.id);
+        temp = temp->pNext;
     }
     printf("\nPress Any key to return to main menu\n");
     _getch();
@@ -523,10 +523,10 @@ void DeleteEmpById()
         }
     } while (!isIdExist(id) && !returnFlag);
 }
+
 void DeleteAllEmp()
 {
-
-    char returnFlag = 0;
+    char returnFlag = false;
     char ch;
     do
     {
@@ -534,6 +534,14 @@ void DeleteAllEmp()
         ch = _getche();
         if (ch == 'y')
         {
+            Node *temp = pStart;
+            while (temp)
+            {
+                pStart = pStart->pNext;
+                delete temp;
+                temp = pStart;
+            }
+
             for (int i = 0; i < i; i++)
                 EArr[i].id = -1;
             printf("\nThanks, All Emp Data was deleted press any key to return to Main Menu \n");
