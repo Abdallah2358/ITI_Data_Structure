@@ -38,7 +38,7 @@ public:
         printf("\nEmployee #%i\nName : %s ,Age: %d ,Gender: %s ,Salary : %.2lf ,Over Time : %.2lf ,Tax : %.2lf ,Address : %s \n",
                id, name, age, gender, salary, overTime, tax, address);
     }
-    void showNetSalary(int id)
+    void showNetSalary()
     {
         double net = salary + overTime - tax;
         printData();
@@ -71,7 +71,7 @@ public:
     Node *pLast;
     Node *pStart;
 
-    DoubleLinkedList(/* args */)
+    DoubleLinkedList()
     {
         pLast = NULL;
         pStart = NULL;
@@ -91,6 +91,7 @@ public:
             pLast = pNew;
         }
     }
+
     Node *SearchList(int key)
     {
         Node *pSearch = pStart;
@@ -102,66 +103,133 @@ public:
         }
         return pSearch;
     }
-
-    void Display(int key)
+    int chooseEmpID()
     {
-        Node *pDisp = SearchList(key);
-        if (pDisp == NULL)
+        int temp;
+        do
         {
-            cout << "NotFound" << endl;
-        }
-        else
+            printf("Please Choose EmpID : ");
+            scanf("%i", &temp);
+            if (SearchList(temp))
+            {
+                printf("\nThis ID already used.\n");
+            }
+        } while (SearchList(temp));
+        return temp;
+    }
+    void Display()
+    {
+        int id;
+        bool returnFlag = false, ch;
+        do
         {
-            pDisp->data.printData() ;
-        }
+            printf("Please Choose EmpID between 1 and 10 : ");
+            scanf("%i", &id);
+            if (SearchList(id))
+            {
+                Node *pDisp = SearchList(id);
+                pDisp->data.printData();
+                printf("\nPress Any key to return to main menu\n");
+                _getch();
+            }
+            else
+            {
+                printf("\nThis ID Does Not Exist.\n");
+                printf("\nPlease Try Again or press Backspace to return\n");
+                ch = _getch();
+                if (ch == 8)
+                    returnFlag = true;
+            }
+        } while (!SearchList(id) && !returnFlag);
     }
     void displayAll()
     {
-        Node *pDisp = this->pStart;
-        while (pDisp != NULL)
+        Node *temp = pStart;
+        while (temp)
         {
-            pDisp->data.printData();
-            pDisp = pDisp->pNext;
+            temp->data.printData();
+            temp = temp->pNext;
         }
+        printf("\nPress Any key to return to main menu\n");
+        _getch();
     }
-    void deleteNode(int key)
+    void deleteNode()
     {
-        Node *pDelete = SearchList(key);
-        if (pDelete == NULL)
+        int id;
+        bool returnFlag = false;
+        do
         {
-            cout << "NotFound" << endl;
-        }
-        else if (this->pStart == this->pLast)
-        {
-            this->pLast = this->pStart = NULL;
-        }
-        else if (this->pStart == pDelete)
-        {
-            pStart = pStart->pNext;
-            pStart->pPrev = NULL;
-        }
-        else if (pLast == pDelete)
-        {
-            pLast = pLast->pPrev;
-            pLast->pNext = NULL;
-        }
-        else
-        {
-            pDelete->pPrev->pNext = pDelete->pNext;
-            pDelete->pNext->pPrev = pDelete->pPrev;
-        }
-        delete pDelete;
+            printf("Please Choose EmpID between 1 and 10 : ");
+            scanf("%i", &id);
+            Node *pDel = SearchList(id);
+            if (pDel == NULL)
+            {
+                printf("\nThis ID Does Not Exist.\n");
+                printf("\nPlease Try Again or press Backspace to return to Main Menu\n");
+                char ch = _getch();
+                if (ch == 8)
+                    returnFlag = true;
+            }
+            else
+            {
+                if (pStart == pLast)
+                {
+                    pStart = pLast = NULL;
+                }
+                else if (pStart = pDel)
+                {
+                    pStart = pStart->pNext;
+                    pStart->pPrev = NULL;
+                }
+                else if (pLast == pDel)
+                {
+                    pLast = pLast->pPrev;
+                    pLast->pPrev = NULL;
+                }
+                else
+                {
+                    pDel->pNext->pPrev = pDel->pPrev;
+                    pDel->pPrev->pNext = pDel->pNext;
+                }
+                delete pDel;
+                returnFlag = 1;
+                printf("\nEmp #%i Deleted\nPress Any key to return to main menu\n", id);
+                _getch();
+            }
+        } while (!SearchList(id) && !returnFlag);
     }
     void deleteAll()
     {
-        Node *pTemp;
-        while (pStart != NULL)
+        char returnFlag = false;
+        char ch;
+        do
         {
-            pTemp = pStart;
-            pStart = pStart->pNext;
-            delete pTemp;
-        }
-        pLast = NULL;
+            printf("Are You sure You want to delete !!! ALL !!! Employee Data ? y/n\n");
+            ch = _getche();
+            if (ch == 'y')
+            {
+                Node *temp = pStart;
+                while (temp)
+                {
+                    pStart = pStart->pNext;
+                    delete temp;
+                    temp = pStart;
+                }
+                printf("\nThanks, All Emp Data was deleted press any key to return to Main Menu \n");
+                _getch();
+            }
+            else if (ch == 'n')
+            {
+                printf("\nThanks, Nothing was deleted press any key to return to Main Menu \n");
+                _getch();
+            }
+            else
+            {
+                printf("\nInValid Input, Please Try Again or press Backspace to return to Main Menu\n");
+                _getch();
+                
+            }
+        } while (ch != 'y' && ch != 'n' && !returnFlag);
     }
     ~DoubleLinkedList()
     {
@@ -265,40 +333,13 @@ void updateMainMenu()
 }
 
 // Initialization Functions
-void initId()
-{
-    for (int i = 0; i < 10; i++)
-    {
-        EArr[i].id = -1;
-    }
-}
 
 void Init()
 {
     showMainMenu();
-    initId();
 }
 
 // Input Functions
-char isIdExist(int empId)
-{
-    return EArr[empId].id != -1;
-}
-
-int chooseEmpID()
-{
-    int temp;
-    do
-    {
-        printf("Please Choose EmpID : ");
-        scanf("%i", &temp);
-        if (SearchList(temp))
-        {
-            printf("\nThis ID already used.\n");
-        }
-    } while (SearchList(temp));
-    return temp;
-}
 
 void showInputForm()
 {
@@ -317,131 +358,12 @@ void showInputForm()
     }
 }
 char *lineEditor(int x, int y, char start, char end, int *row, int *col, char *done);
-void receiveFormInput(int empID);
-
-void showEmpByID()
-{
-    int id;
-    bool returnFlag = false, ch;
-    do
-    {
-        printf("Please Choose EmpID between 1 and 10 : ");
-        scanf("%i", &id);
-        if (SearchList(id))
-        {
-            printEmpData(id);
-            printf("\nPress Any key to return to main menu\n");
-            _getch();
-        }
-        else
-        {
-            printf("\nThis ID Does Not Exist.\n");
-            printf("\nPlease Try Again or press Backspace to return\n");
-            ch = _getch();
-            if (ch == 8)
-                returnFlag = true;
-        }
-    } while (!SearchList(id) && !returnFlag);
-}
-
-void showAllEmp()
-{
-    Node *temp = pStart;
-    while (temp)
-    {
-        printEmpData(temp->data.id);
-        temp = temp->pNext;
-    }
-    printf("\nPress Any key to return to main menu\n");
-    _getch();
-}
-
-void DeleteEmpById()
-{
-    int id;
-    bool returnFlag = false;
-    do
-    {
-        printf("Please Choose EmpID between 1 and 10 : ");
-        scanf("%i", &id);
-        Node *pDel = SearchList(id);
-        if (pDel == NULL)
-        {
-            printf("\nThis ID Does Not Exist.\n");
-            printf("\nPlease Try Again or press Backspace to return to Main Menu\n");
-            char ch = _getch();
-            if (ch == 8)
-                returnFlag = true;
-        }
-        else
-        {
-            if (pStart == pLast)
-            {
-                pStart = pLast = NULL;
-            }
-            else if (pStart = pDel)
-            {
-                pStart = pStart->pNext;
-                pStart->pPrev = NULL;
-            }
-            else if (pLast == pDel)
-            {
-                pLast = pLast->pPrev;
-                pLast->pPrev = NULL;
-            }
-            else
-            {
-                pDel->pNext->pPrev = pDel->pPrev;
-                pDel->pPrev->pNext = pDel->pNext;
-            }
-            delete pDel;
-            returnFlag = 1;
-            printf("\nEmp #%i Deleted\nPress Any key to return to main menu\n", id);
-            _getch();
-        }
-    } while (!isIdExist(id) && !returnFlag);
-}
-
-void DeleteAllEmp()
-{
-    char returnFlag = false;
-    char ch;
-    do
-    {
-        printf("Are You sure You want to delete !!! ALL !!! Employee Data ? y/n\n");
-        ch = _getche();
-        if (ch == 'y')
-        {
-            Node *temp = pStart;
-            while (temp)
-            {
-                pStart = pStart->pNext;
-                delete temp;
-                temp = pStart;
-            }
-
-            for (int i = 0; i < i; i++)
-                EArr[i].id = -1;
-            printf("\nThanks, All Emp Data was deleted press any key to return to Main Menu \n");
-            _getch();
-        }
-        else if (ch == 'n')
-        {
-            printf("\nThanks, Nothing was deleted press any key to return to Main Menu \n");
-            _getch();
-        }
-        else
-        {
-            printf("\nInValid Input, Please Try Again or press Backspace to return to Main Menu\n");
-            _getch();
-            clearScreen();
-        }
-    } while (ch != 'y' && ch != 'n' && !returnFlag);
-}
+Employee receiveFormInput(int empID);
 
 int main()
 {
     Init();
+    DoubleLinkedList ls;
     int temp;
     do
     {
@@ -452,31 +374,31 @@ int main()
             break;
         case 1:
             clearScreen();
-            temp = chooseEmpID(); // a waste of 4 bytes :(
+            temp = ls.chooseEmpID(); // a waste of 4 bytes :(
             showInputForm();
-            receiveFormInput(temp);
+            ls.AddNode(receiveFormInput(temp));
             clearScreen();
-            showNetSalary(temp);
+            ls.SearchList(temp)->data.showNetSalary();
             returnToMainMenu();
             break;
         case 2:
             clearScreen();
-            showEmpByID();
+            ls.Display();
             returnToMainMenu();
             break;
         case 3:
             clearScreen();
-            showAllEmp();
+            ls.displayAll();
             returnToMainMenu();
             break;
         case 4:
             clearScreen();
-            DeleteEmpById();
+            ls.deleteNode();
             returnToMainMenu();
             break;
         case 5:
             clearScreen();
-            DeleteAllEmp();
+            ls.deleteAll();
             returnToMainMenu();
             break;
         default:
@@ -616,7 +538,7 @@ char *lineEditor(int x, int y, char start, char end, int *row, int *col, char *d
     return line;
 }
 
-void receiveFormInput(int empID)
+Employee receiveFormInput(int empID)
 {
     struct Employee temp;
     temp.id = empID;
@@ -677,6 +599,6 @@ void receiveFormInput(int empID)
         }
     } while (!done);
 
-    AddNode(temp);
+    return temp;
     // EArr[empID] = temp;
 }
