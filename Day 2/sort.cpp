@@ -105,7 +105,7 @@ void merge(T *arr, int left, int mid, int right)
     // in the merged array
     while (leftIndex < leftSubArrSize)
         arr[mergeIndex++] = leftSubArr[leftIndex++];
-    while (rightIndex <= rightSubArrSize)
+    while (rightIndex < rightSubArrSize)
         arr[mergeIndex++] = rightSubArr[rightIndex++];
     delete[] leftSubArr;
     delete[] rightSubArr;
