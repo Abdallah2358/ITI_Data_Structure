@@ -62,15 +62,15 @@ void bbSortDec(T *arr, int size)
 template <typename T>
 void merge(T *arr, int left, int mid, int right);
 template <typename T>
-void mergeSort(T *arr, int start, int end)
+void mergeSort(T *arr, int start, int endOfArr)
 {
     // initialize the index
-    int mid = start + (end - start) / 2;
-    if (start < end)
+    int mid = start + (endOfArr - start) / 2;
+    if (start < endOfArr)
     {
         mergeSort(arr, start, mid);
-        mergeSort(arr, mid + 1, end);
-        merge(arr, start, mid, end);
+        mergeSort(arr, mid + 1, endOfArr);
+        merge(arr, start, mid, endOfArr);
     }
 }
 template <typename T>
@@ -116,7 +116,7 @@ int main(int argc, char const *argv[])
     int arr[] = {15, 5, 6, 1, 7, 8};
     auto arr_size = sizeof(arr) / sizeof(arr[0]);
 
-    mergeSort<int>(arr, 0, arr_size);
+    selSort<int>(arr,  arr_size);
     for (int i = 0; i < 6; i++)
     {
         cout << arr[i] << "\n";
